@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista Productos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+</head>
+<body>
+<main>
+  <div class="container px-4 py-5">
+    <h1 class="pb-2 border-bottom">Lista Productos</h1>
+    <a class="btn btn-primary mt-4 mb-4" th:href="@{'/product/new'}">Nuevo Producto</a>
+
+    <div th:if="${msg != null}" th:text="${msg}" class="alert alert-success" role="alert"></div>
+    <div th:if="${msg1 != null}" th:text="${msg1}" class="alert alert-primary" role="alert"></div>
+    <div th:if="${msg2 != null}" th:text="${msg2}" class="alert alert-danger" role="alert"></div>
+
+
+    <input id="searchInput" class="form-control mb-3" type="text" placeholder="Search"
+             aria-label="Search">
+    <div id="results"></div>
+
+    <table class="table table-sm">
+      <tr>
+        <th>#</th>
+        <th>Foto</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <!--th></th>
+        <th></th-->
+
+      </tr>
+      <tr th:each="product, info : ${productList}">
+        <td th:text="${info.index + 1}"></td>
+        <td th:text="${product.foto}"></td>
+        <td th:text="${product.nombre}"></td>
+        <td th:text="${product.precio}"></td>
+        <td th:text="${product.stock ? 'En stock':'Agotado'}"></td>
+        <td><a class="btn btn-primary"
+               th:href="@{'/product/edit?id=' + ${product.id}}">Editar</a>
+        </td>
+        <td><a class="btn btn-danger"
+               th:href="@{|/product/delete?id=${product.id}|}">Borrar</a>
+        </td>
+        <td>
+          <button class="btn btn-success" data-toggle="modal" th:data-target="'#exampleModal' + ${info.index}">
+            Ver +
+          </button>
+          <!-- Modal -->
+          <div class="modal fade" th:id="'exampleModal' + ${info.index}" tabindex="-1" role="dialog"
+               th:aria-labelledby="'exampleModal' + ${info.index} + 'Label'" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" th:id="'exampleModal' + ${info.index} + 'Label'">Modal title</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p th:text="${product.foto}"></p>
+                  <p th:text="${product.nombre}"></p>
+                  <p th:text="${product.precio}"></p>
+                  <p th:text="${product.stock ? 'En stock':'Agotado'}"></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+
+      </tr>
+    </table>
+  </div>
+</main>
+<script th:inline="javascript">
+  var listaJava = /*[[${productListJSON}]]*/ '';
+  console.log(listaJava);
+  var lista = JSON.parse(listaJava);
+  console.log(lista);
+
+  var searchInput = document.getElementById("searchInput");
+  var resultsDiv = document.getElementById("results");
+
+  searchInput.addEventListener("keyup", function() {
+    // Obtener el término de búsqueda
+    var searchTerm = searchInput.value.toLowerCase();
+    // Verificar si el término de búsqueda es vacío
+    if (searchTerm === "") {
+      resultsDiv.innerHTML = "";
+      return;
+    }else{
+      // Filtrar los productos que coinciden con el término de búsqueda
+      var filteredProducts = lista.filter(function(product) {
+        return product.nombre.toLowerCase().includes(searchTerm);
+    });}
+    console.log(filteredProducts)
+
+    // Tomar el primer producto del arreglo filtrado (si existe)
+    var firstProduct = filteredProducts[0];
+
+    // Mostrar el primer producto (si existe)
+    if (firstProduct) {
+      var productDiv = document.createElement("div");
+      productDiv.innerHTML = "<h2>" + firstProduct.nombre + "</h2>" +
+              "<p>Precio: " + firstProduct.precio + "</p>" +
+              "<p> Foto: " + firstProduct.foto + "</p>"+
+              "<p> Stock: " + firstProduct.stock + "</p>";
+      resultsDiv.innerHTML = "";
+      resultsDiv.appendChild(productDiv);
+    } else {
+      resultsDiv.innerHTML = "No se encontraron resultados";
+    }});
+
+</script>
+
+</body>
+</html>
