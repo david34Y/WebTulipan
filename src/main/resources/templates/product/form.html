@@ -17,35 +17,34 @@
 <div class="container">
     <div class="row mb-4">
         <div class="col-md-6 offset-md-3">
-            <h2>CU Producto</h2>
-            <form method="post" th:action="@{'/product/save'}" th:object="${product}">
+            <h2 th:text="${product.id == null ? 'Nuevo Producto': 'Actualizar producto'}">CU Producto</h2>
+            <form method="post" th:action="@{product.id == null ? '/product/save': '/product/update'}" th:object="${product}" enctype="multipart/form-data">
                 <input th:field="*{id}" type="hidden"/>
                 <div class="mb-3">
                     <label class="form-label">Nombre del Producto</label>
-                    <input th:field="*{nombre}" type="text" class="form-control"
-                           th:classappend="${#fields.hasErrors('nombre')?'is-invalid':'is-valid'}"/>
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}"
-                         th:errors="*{nombre}">
-                        Please choose a username.
-                    </div>
+                    <input th:field="*{name}" type="text" class="form-control"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Foto</label>
-                    <input th:field="*{foto}" type="text" class="form-control"/>
+                    <label class="form-label" for="archivo">Foto de Perfil</label>
+                    <input name="archivo" id="archivo" type="file" class="form-control"/>
+                </div>
+                <!--input th:field="*{plantPhotos}" type="hidden">
+                <input th:field="*{profilePhoto}" type="hidden"-->
+                <div class="mb-3">
+                    <label class="form-label" for="fotos">Demás fotos</label>
+                    <input  name="fotos" id="fotos" type="file" class="form-control" multiple/>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Precio</label>
-                    <input th:field="*{precio}" type="text" class="form-control"
-                           th:classappend="${#fields.hasErrors('precio')?'is-invalid':'is-valid'}"/>
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('precio')}"
-                         th:errors="*{precio}">
-                        Please choose a username.
-                    </div>
+                    <input th:field="*{price}" type="number" class="form-control" step="0.1"/>
                 </div>
-                <div class="form-check pb-2">
-                    <input th:checked="*{stock}" class="form-check-input" type="checkbox"
-                           name="stock">
-                    <label class="form-check-label">¿Stock?</label>
+                <div class="mb-3">
+                    <label class="form-label">Stock</label>
+                    <input th:field="*{stock}" class="form-control" type="number">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ambiente recomendado</label>
+                    <input th:field="*{recommendedEnvironment}" class="form-control" type="text">
                 </div>
                 <a th:href="@{'/product/'}" class="btn btn-danger">Cancelar</a>
                 <button type="submit" class="btn btn-primary">Guardar</button>

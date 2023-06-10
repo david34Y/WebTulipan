@@ -30,20 +30,22 @@
     <table class="table table-sm">
       <tr>
         <th>#</th>
-        <th>Foto</th>
         <th>Nombre</th>
+        <th>Foto de Perfil</th>
         <th>Precio</th>
         <th>Stock</th>
+        <th>Ambiente</th>
         <th></th>
         <th></th>
         <th></th>
       </tr>
       <tr th:each="product, info : ${productList}">
         <td th:text="${info.index + 1}"></td>
-        <td><img th:src="${product.foto}"></td>
-        <td th:text="${product.nombre}"></td>
-        <td th:text="${product.precio}"></td>
-        <td th:text="${product.stock ? 'En stock':'Agotado'}"></td>
+        <td th:text="${product.name}"></td>
+        <td><img th:src="${product.profilePhoto}" width="100px" height="100pc"></td>
+        <td th:text="${'S/. '+product.price}"></td>
+        <td th:text="${product.stock}"></td>
+        <td th:text="${product.recommendedEnvironment}"></td>
         <td><a class="btn btn-warning"
                th:href="@{'/product/edit?id=' + ${product.id}}">Editar</a>
         </td>
@@ -83,15 +85,13 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" th:id="'exampleModal' + ${info.index} + 'Label'" th:text="${product.nombre}">Modal title</h5>
+                  <h5 class="modal-title" th:id="'exampleModal' + ${info.index} + 'Label'" th:text="${product.name}">Modal title</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <div class="modal-body">
-                  <img th:src="${product.foto}" >
-                  <p th:text="${product.precio}"></p>
-                  <p th:text="${product.stock ? 'En stock':'Agotado'}"></p>
+                <div class="modal-body" th:each="planta: ${product.plantPhotos}">
+                  <img th:src="${planta}" width="100px" height="100px">
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -104,46 +104,5 @@
     </table>
   </div>
 </main>
-<script th:inline="javascript">
-  var listaJava = /*[[${productListJSON}]]*/ '';
-  console.log(listaJava);
-  var lista = JSON.parse(listaJava);
-  console.log(lista);
-
-  var searchInput = document.getElementById("searchInput");
-  var resultsDiv = document.getElementById("results");
-
-  searchInput.addEventListener("keyup", function() {
-    // Obtener el término de búsqueda
-    var searchTerm = searchInput.value.toLowerCase();
-    // Verificar si el término de búsqueda es vacío
-    if (searchTerm === "") {
-      resultsDiv.innerHTML = "";
-      return;
-    }else{
-      // Filtrar los productos que coinciden con el término de búsqueda
-      var filteredProducts = lista.filter(function(product) {
-        return product.nombre.toLowerCase().includes(searchTerm);
-    });}
-    console.log(filteredProducts)
-
-    // Tomar el primer producto del arreglo filtrado (si existe)
-    var firstProduct = filteredProducts[0];
-
-    // Mostrar el primer producto (si existe)
-    if (firstProduct) {
-      var productDiv = document.createElement("div");
-      productDiv.innerHTML = "<h2>" + firstProduct.nombre + "</h2>" +
-              "<p>Precio: " + firstProduct.precio + "</p>" +
-              "<img src='" + firstProduct.foto  +"'>"+
-              "<p>Stock: " + firstProduct.stock + "</p>"
-      resultsDiv.innerHTML = "";
-      resultsDiv.appendChild(productDiv);
-    } else {
-      resultsDiv.innerHTML = "No se encontraron resultados";
-    }});
-
-</script>
-
 </body>
 </html>

@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class ProductDto  {
-    private String id;
-    private Product product;
+    private String message;
+    private Product[] data;
 }

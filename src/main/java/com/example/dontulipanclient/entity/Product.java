@@ -8,7 +8,10 @@ import java.io.Serializable;
 public class Product {
     private String id;
     private String foto;
-    private String nombre;
-    private Float precio;
-    private Boolean stock;
+    private String name;
+    private Float price;
+    private Integer stock;
+    private String recommendedEnvironment;
+    private String profilePhoto;
+    private String[] plantPhotos;
 }
